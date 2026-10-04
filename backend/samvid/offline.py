@@ -15,6 +15,7 @@ _orig_connect = socket.socket.connect
 _orig_connect_ex = socket.socket.connect_ex
 _orig_create = socket.create_connection
 _orig_getaddrinfo = socket.getaddrinfo
+
 ALLOWED_HOSTS: set[str] = set(cfg.FIREBASE_CERT_HOSTS) if cfg.FIREBASE_ENABLED else set()
 _allowed_ips: set[str] = set()
 ALLOWED_EXTERNAL: list[dict] = []
@@ -32,7 +33,7 @@ def _check(addr, kind):
     if isinstance(addr, tuple) and addr:
         host = addr[0]
     else:
-        return 
+        return  
     if _is_local(host):
         ALLOWED_COUNT["n"] += 1
         return
@@ -133,6 +134,8 @@ def manifest() -> list[dict]:
          "license": "MIT", "location": _rel(cfg.INDEX_DIR), "staged": True, "role": "on-prem ANN index, incremental adds"},
         {"component": "Raster I/O", "kind": "library", "name": "rasterio / GDAL", "version": _ver("rasterio"),
          "license": "BSD-3-Clause / MIT", "location": "python site-packages", "staged": True, "role": "GeoTIFF / COG ingestion"},
+        {"component": "PDF reports", "kind": "library", "name": "ReportLab", "version": _ver("reportlab"),
+         "license": "BSD-3-Clause", "location": "python site-packages", "staged": True, "role": "evidence report PDFs"},
         {"component": "API server", "kind": "library", "name": "FastAPI + Uvicorn", "version": _ver("fastapi"),
          "license": "MIT / BSD-3-Clause", "location": "python site-packages", "staged": True, "role": "local REST API"},
         {"component": "Archive data", "kind": "data", "name": "Synthetic S2/S1 archive (demo)", "version": "1",

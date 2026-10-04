@@ -26,9 +26,7 @@ async function req(path, opts = {}) {
   return ct.includes("json") ? res.json() : res.text();
 }
 const post = (p, body) => req(p, { method: "POST", body: JSON.stringify(body || {}) });
-
 export const img = (path) => `${path}${path.includes("?") ? "&" : "?"}t=${encodeURIComponent(session.token())}`;
-
 export const API = {
   login: (username, password) => post("/api/auth/login", { username, password }),
   authConfig: () => fetch("/api/auth/config").then((r) => r.json()),
@@ -52,7 +50,7 @@ export const API = {
     req(`/api/candidates?status=${status}${aoi ? `&aoi=${aoi}` : ""}${type ? `&change_type=${type}` : ""}`),
   candidate: (id) => req(`/api/candidates/${id}`),
   decide: (id, decision, note) => post(`/api/candidates/${id}/decision`, { decision, note }),
-  reportUrl: (id) => img(`/api/candidates/${id}/report`),
+  reportUrl: (id, download = false) => img(`/api/candidates/${id}/report.pdf${download ? "?download=1" : ""}`),
   bundleUrl: (id) => img(`/api/candidates/${id}/bundle`),
   clusters: () => req("/api/clusters"),
   cluster: (id) => req(`/api/clusters/${id}`),

@@ -13,7 +13,9 @@ from fastapi.staticfiles import StaticFiles
 from PIL import Image
 from pydantic import BaseModel
 from . import offline
-offline.install_guard()  
+
+offline.install_guard()   
+
 from . import archive, auth, config as cfg, db, discovery, evidence, firebase_auth, ledger, monitor, report, review, search  # noqa: E402
 from .change import LABELS, detect_pair, earliest_observation  # noqa: E402
 
@@ -49,11 +51,13 @@ def login(body: LoginIn):
         raise HTTPException(401, "invalid credentials")
     ledger.append(body.username, "auth.login", body.username, {"method": "local password", "role": r["user"]["role"]})
     return r
+
 class FirebaseLoginIn(BaseModel):
     id_token: str
 
 @app.get("/api/auth/config")
 def auth_config():
+    """Tells the login page which sign-in methods this deployment offers."""
     return {"local": True, "google": cfg.FIREBASE_ENABLED, "firebase_project": cfg.FIREBASE_PROJECT_ID or None}
 
 @app.post("/api/auth/firebase")
@@ -124,6 +128,7 @@ def aoi_scenes(aoi: str, u=Depends(user)):
 @app.get("/api/scenes/{sid}/image.png")
 def scene_png(sid: str, layer: str = "rgb", u=Depends(user)):
     return Response(evidence.scene_image(sid, layer), media_type="image/png")
+
 class SearchIn(BaseModel):
     query: str
     filters: dict = {}
@@ -131,6 +136,7 @@ class SearchIn(BaseModel):
 @app.post("/api/search/text")
 def search_text(body: SearchIn, u=Depends(user)):
     return search.text_search(body.query, body.filters, actor=u["username"])
+
 class ImageSearchIn(BaseModel):
     obs_id: int
     filters: dict = {}
@@ -149,7 +155,7 @@ async def search_chip(file: UploadFile = File(...), u=Depends(user)):
         shutil.copyfileobj(file.file, f)
     try:
         return search.image_search(chip_path=dest, actor=u["username"])
-    except Exception as e:  # noqa: BLE001
+    except Exception as e:  
         raise HTTPException(422, f"could not read chip: {e}")
 
 @app.get("/api/tiles/{obs_id}/thumb.png")
@@ -211,7 +217,6 @@ def change_analyze(body: ChangeIn, u=Depends(user)):
                 continue
         search_ = earliest_observation(body.aoi, o["mask"], i, j) if o["type"] != "unclassified" else None
         objs.append({k: v for k, v in o.items() if k != "mask"} | {"label": LABELS[o["type"]], "earliest": search_})
-    # overlay images: seasonal-normalised vs naive
     after = np.array(Image.open(cfg.DERIVED_DIR / body.aoi / f"{st['sids'][j]}.png").convert("RGB")).astype(np.float32)
     run_id = uuid.uuid4().hex[:10]
     outs = {}
@@ -255,6 +260,7 @@ def candidate_img(cid: str, kind: str, u=Depends(user)):
     if kind not in ("before", "earliest", "after", "change", "before_cls", "after_cls", "quality_after"):
         raise HTTPException(404)
     return Response(evidence.candidate_image(cid, kind), media_type="image/png")
+
 class DecisionIn(BaseModel):
     decision: str
     note: str = ""
@@ -266,9 +272,15 @@ def decide(cid: str, body: DecisionIn, u=Depends(user)):
     except (KeyError, ValueError) as e:
         raise HTTPException(400, str(e))
 
-@app.get("/api/candidates/{cid}/report", response_class=HTMLResponse)
-def candidate_report(cid: str, u=Depends(user)):
-    return report.candidate_html(cid, u["username"])
+@app.get("/api/candidates/{cid}/report.pdf")
+def candidate_report(cid: str, download: int = 0, u=Depends(user)):
+    try:
+        pdf = report.candidate_pdf(cid, u["username"])
+    except KeyError:
+        raise HTTPException(404, "unknown alert")
+    disp = "attachment" if download else "inline"
+    return Response(pdf, media_type="application/pdf",
+                    headers={"Content-Disposition": f'{disp}; filename="samvid-report-{cid}.pdf"'})
 
 @app.get("/api/candidates/{cid}/bundle")
 def candidate_bundle(cid: str, u=Depends(user)):

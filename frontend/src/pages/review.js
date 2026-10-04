@@ -42,7 +42,7 @@ async function open(id) {
       <div class="row" style="align-items:flex-start"><div style="flex:1;min-width:260px">
           <div class="row" style="margin-bottom:8px">${statusTag(c.status)}<span class="faint small">${esc(aoiName(c.aoi))}, ${c.centroid[0].toFixed(4)}°N ${c.centroid[1].toFixed(4)}°E</span></div>
           <p class="story">${story(c)}</p></div>
-        <div class="row"><a class="btn sm" target="_blank" href="${API.reportUrl(id)}">Evidence report</a><a class="btn sm" href="${API.bundleUrl(id)}">Download data</a></div></div>
+        <div class="row"><a class="btn sm" target="_blank" rel="noopener" href="${API.reportUrl(id)}">View report</a><a class="btn sm primary" href="${API.reportUrl(id, true)}" download>Download PDF</a><a class="btn sm" href="${API.bundleUrl(id)}">Data (JSON)</a></div></div>
       <div class="film" style="margin-top:18px">
         <figure><img src="${u("before")}" alt="before"><figcaption><b>Before</b>${fdate(sceneDate(c.before_scene))}</figcaption></figure>
         <figure><img src="${u("earliest")}" alt="first sign"><figcaption><b>First sign</b>${fdate(c.earliest_date)}</figcaption></figure>
