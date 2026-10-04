@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: samvid
+    runtime: docker
+    plan: free
+    region: singapore
+    healthCheckPath: /api/health
+    envVars:
+      - key: SAMVID_DEMO_PASSWORD        
+        sync: false
+      - key: FIREBASE_PROJECT_ID          
+        sync: false
+      - key: SAMVID_ALLOWED_EMAILS        
+        sync: false
+      - key: SAMVID_SUPERVISOR_EMAILS
+        sync: false
+      - key: VITE_FIREBASE_API_KEY
+        sync: false
+      - key: VITE_FIREBASE_AUTH_DOMAIN
+        sync: false
+      - key: VITE_FIREBASE_PROJECT_ID
+        sync: false
+      - key: VITE_FIREBASE_APP_ID
+        sync: false
