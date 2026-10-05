@@ -363,7 +363,7 @@ samvid/
 │   ├── tests/
 │   │   └── test_core.py
 │   ├── requirements.txt
-│   └── .env.example
+│   └── .env
 │
 ├── frontend/
 │   ├── index.html            # sign-in
@@ -376,7 +376,7 @@ samvid/
 │   │   └── pages/            # one script per page
 │   ├── vite.config.js
 │   ├── package.json
-│   └── .env.example
+│   └── .env
 │
 ├── docs/
 │   ├── sample-report.pdf
