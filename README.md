@@ -1,12 +1,15 @@
 # 🛰️ SAMVID - Semantic Analysis and Multimodal Vision for Change Detection
 
-Built for **Smart India Hackathon 2026** - Problem Statement **SIH26227: Semantic Retrieval and Multi-Temporal Change Analysis of Satellite Imagery** - by **Team NullNVoid**.
-
 An analyst with years of satellite images over the same area doesn't really want to look at pictures. They want answers: *what changed here, when did it start, is it real or just the season, and where else is this happening?* SAMVID tries to answer those questions directly. You can search the archive in plain English, compare any two dates, get a ranked list of alerts with evidence, and see which areas are heating up. Everything runs **fully offline** on one machine, and every decision is written to a tamper-evident audit trail.
 
 ![SAMVID overview dashboard](Screenshots/overview.png)
 
 ---
+## 🎥 Demo
+
+[![SAMVID Demo](https://img.youtube.com/vi/gHS-g25oG5U/maxresdefault.jpg)](https://youtu.be/gHS-g25oG5U)
+
+▶️ **[Watch the full demo on YouTube](https://youtu.be/gHS-g25oG5U)**
 
 ## The problem I was trying to solve
 
@@ -377,8 +380,7 @@ samvid/
 │
 ├── docs/
 │   ├── sample-report.pdf
-│   ├── DEMO_SCRIPT.md
-│   └── SIH_ROUND2_CHECKLIST.md
+|
 ├── Screenshots/
 ├── Dockerfile
 ├── render.yaml
